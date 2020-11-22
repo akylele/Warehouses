@@ -8,12 +8,13 @@ import Button from "../../basic/button";
 import List from "./list";
 
 import validator from "../../../helpers/validation";
+import Toast from "../../../helpers/toast";
 
 const CreateWarehouse = (props) => {
     const [name, setName] = useState('')
     const [address, setAddress] = useState('')
     const [products, setProducts] = useState([])
-    const OwnerWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Нераспределенный склад 1')
+    const OwnerWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад')
 
     const createWarehouse = () => {
         if (validator(name) && validator(address)) {
@@ -25,6 +26,8 @@ const CreateWarehouse = (props) => {
                 products
             })
             //redirect to /warehouses
+        } else {
+            Toast('Введите корректные данные')
         }
     }
 
@@ -58,8 +61,12 @@ const CreateWarehouse = (props) => {
                     <Button onClick={() => createWarehouse()}>Создать</Button>
                 </Col>
             </Row>
-            {OwnerWarehouse.length > 0 && <List items={OwnerWarehouse[0].products} type="add" onAdd={onAdd}
-                                                title="Вы можете добавить товары из нераспределенного склада в этот склад"/>}
+            {OwnerWarehouse.length > 0 && <List
+                items={OwnerWarehouse[0].products}
+                type="add"
+                onAdd={onAdd}
+                title="Вы можете добавить товары из нераспределенного склада в этот склад"
+            />}
         </>
     )
 }
@@ -72,6 +79,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
+        editProduct: (value) => {
+            dispatch({type: 'CHANGE_PRODUCT', value})
+        },
         createWarehouse: (value) => {
             dispatch({type: 'ADD_WAREHOUSE', value})
         }

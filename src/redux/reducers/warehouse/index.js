@@ -34,7 +34,7 @@ export const initialState = [
             },
         ]
     }, {
-        name: 'Нераспределенный склад 1',
+        name: 'Общий склад',
         address: 'город Ростов',
         id: 3,
         products: [
@@ -60,7 +60,7 @@ export default function Warehouses(state = initialState, action) {
         case 'SET_STATE':
             return action.value
         case 'CHANGE_WAREHOUSE':
-            return initialState.map(warehouse => {
+            return state.map(warehouse => {
                 if (warehouse.id === action.value.id) {
                     warehouse = action.value
                 }
@@ -68,10 +68,9 @@ export default function Warehouses(state = initialState, action) {
                 return warehouse
             })
         case 'ADD_WAREHOUSE':
-            console.log(action.value)
-            return initialState.concat(action.value)
+            return state.concat(action.value)
         case 'REMOVE_WAREHOUSE':
-            return initialState.filter(warehouse => warehouse.id !== action.value.id)
+            return state.filter(warehouse => warehouse.id !== action.value.id)
         default:
             return state
     }
