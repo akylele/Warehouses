@@ -1,19 +1,18 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {isMobile} from 'react-device-detect'
-
-import {initialState} from '../../../redux/reducers/warehouse'
+import {connect} from "react-redux";
 
 import Row from '../../basic/row'
 import Col from '../../basic/col'
 import Button from '../../basic/button'
+import List from "./list";
 
 import '../../../style/modal.scss'
-import List from "./list";
 
 const ModalEditWarehouse = (props) => {
     const [fields, setFields] = useState({})
 
-    const OwnerWarehouse = initialState && initialState.filter(elem => elem.name === 'Нераспределенный склад 1')
+    const OwnerWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Нераспределенный склад 1')
 
     const handleChange = (field, value) => {
         switch (field) {
@@ -80,11 +79,22 @@ const ModalEditWarehouse = (props) => {
             <div>
                 <h5>Продукты</h5>
                 <List items={props.content.products}/>
-                {OwnerWarehouse.length > 0 && <List items={OwnerWarehouse[0].products}
+                {OwnerWarehouse.length > 0 && <List items={OwnerWarehouse[0].products} type="add"
                                                     title="Вы можете добавить товары из нераспределенного склада в этот склад"/>}
             </div>
         </div>
     )
 }
 
-export default ModalEditWarehouse
+function mapStateToProps(state) {
+    return {
+        warehouses: state.warehousesReducer
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModalEditWarehouse)

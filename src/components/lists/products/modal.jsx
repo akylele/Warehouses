@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import {isMobile} from 'react-device-detect'
-
-import {initialState} from '../../../redux/reducers/warehouse'
+import {connect} from "react-redux";
 
 import Toast from "../../../helpers/toast";
 import Row from '../../basic/row'
@@ -116,7 +115,7 @@ const ModalEditProduct = (props) => {
                                             <select style={{display: 'block'}}
                                                     onChange={(e) => handleChangeSelect(warehouse, e.target.value)}>
                                                 <option value="empty" key={0} selected> </option>
-                                                {initialState && initialState.map((warehouse, index) => (
+                                                {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
                                                     <option value={warehouse.name} key={index+1}>{warehouse.name}</option>
                                                 ))}
                                             </select>
@@ -136,4 +135,15 @@ const ModalEditProduct = (props) => {
         )
 }
 
-export default ModalEditProduct
+function mapStateToProps(state) {
+    return {
+        warehouses: state.warehousesReducer
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModalEditProduct)

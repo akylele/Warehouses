@@ -1,17 +1,17 @@
 import React, {useState} from 'react'
 import {isMobile} from 'react-device-detect'
+import {connect} from "react-redux";
 
 import ModalEditWarehouse from './modal'
 import Row from '../../basic/row'
 import Col from '../../basic/col'
 import Button from '../../basic/button'
-
-import {initialState} from '../../../redux/reducers/warehouse'
-
-import '../../../style/warehouseList.scss'
 import SwitchPage from "../../SwitchPage";
 
-const WarehouseList = () => {
+import '../../../style/warehouseList.scss'
+
+
+const WarehouseList = (props) => {
     const [modalContent, setModalContent] = useState(null)
 
     const handleModal = () => {
@@ -38,7 +38,7 @@ const WarehouseList = () => {
                     </Col>
                 </Row>
                     <ul className="collection with-header">
-                        {initialState && initialState.map((item, index) => (
+                        {props.warehouses.length > 0 && props.warehouses.map((item, index) => (
                             <li className="collection-item" key={index}>
                                 <Row>
                                     <Col styles="s3">
@@ -72,4 +72,16 @@ const WarehouseList = () => {
     )
 }
 
-export default WarehouseList
+function mapStateToProps(state) {
+    return {
+        warehouses: state.warehousesReducer
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(WarehouseList)
