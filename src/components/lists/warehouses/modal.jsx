@@ -12,7 +12,7 @@ import '../../../style/modal.scss'
 const ModalEditWarehouse = (props) => {
     const [fields, setFields] = useState({})
 
-    const OwnerWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Нераспределенный склад 1')
+    const OwnerWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад')
 
     const handleChange = (field, value) => {
         switch (field) {

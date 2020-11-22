@@ -14,7 +14,7 @@ export const initialState = [
                 id: 2,
                 quantity: 10
             }, {
-                name: 'Нераспределенный склад 1',
+                name: 'Общий склад',
                 address: 'город Ростов',
                 id: 3,
                 quantity: 30
@@ -46,7 +46,7 @@ export const initialState = [
                 id: 2,
                 quantity: 6
             }, {
-                name: 'Нераспределенный склад 1',
+                name: 'Общий склад',
                 address: 'город Ростов',
                 id: 3,
                 quantity: 3
@@ -57,7 +57,7 @@ export const initialState = [
         id: 4,
         warehouses: [
             {
-                name: 'Нераспределенный склад 1',
+                name: 'Общий склад',
                 address: 'город Ростов',
                 id: 3,
                 quantity: 14
@@ -71,7 +71,7 @@ export default function Products(state = initialState, action) {
         case 'SET_STATE':
             return action.value
         case 'CHANGE_PRODUCT':
-            return initialState.map(product => {
+            return state.map(product => {
                 if (product.id === action.value.id) {
                     product = action.value
                 }
@@ -79,9 +79,9 @@ export default function Products(state = initialState, action) {
                 return product
             })
         case 'ADD_PRODUCT':
-            return initialState.push(action.value)
+            return state.concat(action.value)
         case 'REMOVE_PRODUCT':
-            return initialState.filter(product => product.id !== action.value.id)
+            return state.filter(product => product.id !== action.value.id)
         default:
             return state
     }
