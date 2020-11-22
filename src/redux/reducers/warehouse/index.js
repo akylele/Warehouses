@@ -62,7 +62,14 @@ export default function Warehouses(state = initialState, action) {
         case 'CHANGE_WAREHOUSE':
             return state.map(warehouse => {
                 if (warehouse.id === action.value.id) {
-                    warehouse = action.value
+                    action.value.products.map(product => {
+                        if (product.quantity === 0) {
+                            warehouse = {
+                                ...action.value,
+                                products: action.value.products.filter(prod => prod.name !== product.name)
+                            }
+                        }
+                    })
                 }
 
                 return warehouse

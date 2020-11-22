@@ -19,7 +19,28 @@ const CreateWarehouse = (props) => {
     const createWarehouse = () => {
         if (validator(name) && validator(address)) {
             //если сохранился, удалять эти продукты из нераcпределенного склада
-            if (!props.warehouses.filter(warehouse => warehouse.name === name)) {
+            if (!props.warehouses.filter(warehouse => warehouse.name === name).length > 0) {
+
+                if (products) {
+                    const generalWarehouse = props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
+
+                    props.editWarehouse({
+                        ...generalWarehouse,
+                        products: generalWarehouse.products.map(prod => {
+                            const findProduct = products.filter(product => product.id === prod.id)
+                            if (findProduct.length > 0) {
+                                return ({
+                                    id: prod.id,
+                                    quantity: prod.quantity - findProduct.pop().quantity,
+                                    name: prod.name
+                                })
+                            } else {
+                                return prod
+                            }
+                        })
+                    })
+                }
+
                 props.createWarehouse({
                     name,
                     address,
@@ -47,7 +68,6 @@ const CreateWarehouse = (props) => {
         } else {
             setProducts(products.concat(item))
         }
-        console.log(products)
     }
 
     return (
@@ -84,8 +104,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        editProduct: (value) => {
-            dispatch({type: 'CHANGE_PRODUCT', value})
+        editWarehouse: (value) => {
+            dispatch({type: 'CHANGE_WAREHOUSE', value})
         },
         createWarehouse: (value) => {
             dispatch({type: 'ADD_WAREHOUSE', value})
