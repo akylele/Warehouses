@@ -1,17 +1,16 @@
 import React, {useState} from 'react'
 import {isMobile} from 'react-device-detect'
+import {connect} from "react-redux";
 
 import Row from '../../basic/row'
 import Col from '../../basic/col'
 import Button from '../../basic/button'
-
-import {initialState} from '../../../redux/reducers/products'
-
-import '../../../style/productsList.scss'
 import ModalEditProduct from "./modal";
 import SwitchPage from "../../SwitchPage";
 
-const ProductsList = () => {
+import '../../../style/productsList.scss'
+
+const ProductsList = (props) => {
     const [modalContent, setModalContent] = useState(null)
 
     const handleModal = () => {
@@ -41,7 +40,7 @@ const ProductsList = () => {
                         </Col>
                     </Row>
                     <ul className="collection">
-                        {initialState && initialState.map((product, index) => (
+                        {props.products.length > 0 && props.products.map((product, index) => (
                             <li className="collection-item" key={index}>
                                 <Row>
                                     <Col styles="s2">
@@ -88,4 +87,15 @@ const ProductsList = () => {
     )
 }
 
-export default ProductsList
+function mapStateToProps(state) {
+    return {
+        products: state.productsReducer
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductsList)

@@ -4,7 +4,6 @@ import {NavLink} from 'react-router-dom'
 import '../style/switchPage.scss'
 
 const SwitchPage = () => {
-    console.log(window.location.href.includes('products'))
     if (window.location.href.includes('product')) {
         return (
             <div className="switch">

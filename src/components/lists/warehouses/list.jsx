@@ -1,5 +1,6 @@
 import React from 'react'
 import {isMobile} from "react-device-detect";
+
 import Row from "../../basic/row";
 import Col from "../../basic/col";
 import Button from "../../basic/button";
@@ -42,7 +43,7 @@ const List = (props) => (
                                 <label>всего на складе: {item.quantity}</label>
                             </Col>
                             <Col styles="s3">
-                                <Button>Убрать</Button>
+                                <Button>{props.type === 'add' ? 'Добавить' : 'Убрать'}</Button>
                             </Col>
                         </Row>
                     </li>

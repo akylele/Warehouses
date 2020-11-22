@@ -54,3 +54,28 @@ export const initialState = [
         ]
     },
 ]
+
+export default function Warehouses(state = initialState, action) {
+    switch (action.type) {
+        case 'SET_STATE':
+            return { initialState: action.value }
+        case 'CHANGE_WAREHOUSE':
+            return initialState.map(warehouse => {
+                    if (warehouse.id === action.value.id) {
+                        warehouse = action.value
+                    }
+
+                    return warehouse
+                })
+        case 'ADD_WAREHOUSE':
+            return {
+                initialState: initialState.push(action.value)
+            }
+        case 'REMOVE_WAREHOUSE':
+            return {
+                initialState: initialState.filter(warehouse => warehouse.id !== action.value.id)
+            }
+        default:
+            return state
+    }
+}
