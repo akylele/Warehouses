@@ -46,7 +46,7 @@ export const initialState = [
                 id: 3,
                 name: 'Iphone 10',
                 quantity: 3
-            },{
+            }, {
                 id: 1,
                 name: 'Утюг',
                 quantity: 30
@@ -58,23 +58,20 @@ export const initialState = [
 export default function Warehouses(state = initialState, action) {
     switch (action.type) {
         case 'SET_STATE':
-            return { initialState: action.value }
+            return action.value
         case 'CHANGE_WAREHOUSE':
             return initialState.map(warehouse => {
-                    if (warehouse.id === action.value.id) {
-                        warehouse = action.value
-                    }
+                if (warehouse.id === action.value.id) {
+                    warehouse = action.value
+                }
 
-                    return warehouse
-                })
+                return warehouse
+            })
         case 'ADD_WAREHOUSE':
-            return {
-                initialState: initialState.push(action.value)
-            }
+            console.log(action.value)
+            return initialState.concat(action.value)
         case 'REMOVE_WAREHOUSE':
-            return {
-                initialState: initialState.filter(warehouse => warehouse.id !== action.value.id)
-            }
+            return initialState.filter(warehouse => warehouse.id !== action.value.id)
         default:
             return state
     }

@@ -69,23 +69,19 @@ export const initialState = [
 export default function Products(state = initialState, action) {
     switch (action.type) {
         case 'SET_STATE':
-            return { initialState: action.value }
+            return action.value
         case 'CHANGE_PRODUCT':
             return initialState.map(product => {
-                    if (product.id === action.value.id) {
-                        product = action.value
-                    }
+                if (product.id === action.value.id) {
+                    product = action.value
+                }
 
-                    return product
-                })
+                return product
+            })
         case 'ADD_PRODUCT':
-            return {
-                initialState: initialState.push(action.value)
-            }
+            return initialState.push(action.value)
         case 'REMOVE_PRODUCT':
-            return {
-                initialState: initialState.filter(product => product.id !== action.value.id)
-            }
+            return initialState.filter(product => product.id !== action.value.id)
         default:
             return state
     }
