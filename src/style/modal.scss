@@ -1,0 +1,24 @@
+.modal {
+  display: block!important;
+  z-index: 10;
+  width: 90%;
+  height: 90%;
+  max-height: 90%;
+  box-shadow: 0 0 30px 1px grey;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  overflow: auto;
+}
+
+.margin {
+  margin: 0 15px!important;
+}
+
+.row {
+  margin: 15px 0;
+}
+
+.btn {
+  min-width: 145px;
+}
