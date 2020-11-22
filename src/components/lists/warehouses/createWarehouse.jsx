@@ -17,13 +17,14 @@ const CreateWarehouse = (props) => {
 
     const createWarehouse = () => {
         if (validator(name) && validator(address)) {
-            //если сохранился, удалять эти продукты из нерапределенного склада
+            //если сохранился, удалять эти продукты из нераcпределенного склада
             return props.createWarehouse({
                 name,
                 address,
                 id: Date.now(),
                 products
             })
+            //redirect to /warehouses
         }
     }
 

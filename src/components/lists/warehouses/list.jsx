@@ -24,6 +24,12 @@ const List = (props) => {
         }
     }
 
+    const handleSaveWarehouse = (item) => {
+        if (props.type === 'add') {
+            return props.onAdd(products.filter(elem => elem.id === item.id).pop())
+        }
+    }
+
     return (
         <>
             {props.title && <h5>{props.title}</h5>}
@@ -57,14 +63,18 @@ const List = (props) => {
                                     </Row>
                                 </Col>
                                 <Col styles="s3">
-                                    <input type="number" id={`quantityProduct${index}`} min={1} max={item.quantity}
-                                           defaultValue={0}
-                                           onChange={(e) => selectQuantity(item, e.target.value)}/>
+                                    <input
+                                        type="number"
+                                        id={`quantityProduct${index}`}
+                                        min={1}
+                                        max={item.quantity}
+                                        defaultValue={0}
+                                        onChange={(e) => selectQuantity(item, e.target.value)}/>
                                     <label>всего на складе: {item.quantity}</label>
                                 </Col>
                                 <Col styles="s3">
                                     <Button
-                                        onClick={props.type === 'add' ? () => props.onAdd(products.filter(elem => elem.id === item.id).pop()) : ''}
+                                        onClick={() => handleSaveWarehouse(item)}
                                         disabled={!products.filter(elem => elem.id === item.id).length > 0}
                                     >
                                         {props.type === 'add' ? 'Добавить' : 'Убрать'}
