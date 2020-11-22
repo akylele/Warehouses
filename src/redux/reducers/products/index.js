@@ -1,68 +1,16 @@
 export const initialState = [
     {
         name: 'Утюг',
-        id: 1,
-        warehouses: [
-            {
-                name: 'Склад 1',
-                address: 'город Магадан',
-                id: 1,
-                quantity: 5
-            }, {
-                name: 'Склад 2',
-                address: 'город Таганрог',
-                id: 2,
-                quantity: 10
-            }, {
-                name: 'Общий склад',
-                address: 'город Ростов',
-                id: 3,
-                quantity: 30
-            },
-        ]
+        id: 1
     }, {
         name: 'Iphone SE',
-        id: 2,
-        warehouses: [
-            {
-                name: 'Склад 1',
-                address: 'город Магадан',
-                id: 1,
-                quantity: 10
-            }, {
-                name: 'Склад 2',
-                address: 'город Таганрог',
-                id: 2,
-                quantity: 20
-            },
-        ]
+        id: 2
     }, {
         name: 'Iphone 10',
-        id: 3,
-        warehouses: [
-            {
-                name: 'Склад 2',
-                address: 'город Таганрог',
-                id: 2,
-                quantity: 6
-            }, {
-                name: 'Общий склад',
-                address: 'город Ростов',
-                id: 3,
-                quantity: 3
-            },
-        ]
+        id: 3
     }, {
         name: 'Двери',
-        id: 4,
-        warehouses: [
-            {
-                name: 'Общий склад',
-                address: 'город Ростов',
-                id: 3,
-                quantity: 14
-            },
-        ]
+        id: 4
     },
 ]
 

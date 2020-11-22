@@ -49,25 +49,38 @@ const ProductsList = (props) => {
                                         </Row>
                                     </Col>
                                     <Col styles="s2">
-                                        {product.warehouses.map((warehouse, index) => (
-                                            <Row key={index}>
-                                                <span>{warehouse.address}</span>
-                                            </Row>
-                                        ))}
+                                        {props.warehouses.map(warehouse => warehouse.products.map(prod => {
+                                            if (prod.id === product.id) {
+                                                return (
+                                                    <Row key={index}>
+                                                        <span>{warehouse.address}</span>
+                                                    </Row>
+                                                )
+                                            }
+                                        }))}
                                     </Col>
                                     <Col styles="s3">
-                                        {product.warehouses.map((warehouse, index) => (
-                                            <Row key={index}>
-                                                <span>{warehouse.name}</span>
-                                            </Row>
-                                        ))}
+                                        {props.warehouses.map(warehouse => warehouse.products.map(prod => {
+                                            if (prod.id === product.id) {
+                                                return (
+                                                    <Row key={index}>
+                                                        <span>{warehouse.name}</span>
+                                                    </Row>
+                                                )
+                                            }
+                                        }))
+                                        }
                                     </Col>
                                     <Col styles="s2">
-                                        {product.warehouses.map((warehouse, index) => (
-                                            <Row key={index}>
-                                                <span>{warehouse.quantity}</span>
-                                            </Row>
-                                        ))}
+                                        {props.warehouses.map(warehouse => warehouse.products.map(prod => {
+                                            if (prod.id === product.id) {
+                                                return (
+                                                    <Row key={index}>
+                                                        <span>{prod.quantity}</span>
+                                                    </Row>
+                                                )
+                                            }
+                                        }))}
                                     </Col>
                                     <Col styles="s3">
                                         <Button
@@ -89,13 +102,13 @@ const ProductsList = (props) => {
 
 function mapStateToProps(state) {
     return {
-        products: state.productsReducer
+        products: state.productsReducer,
+        warehouses: state.warehousesReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-    }
+    return {}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsList)

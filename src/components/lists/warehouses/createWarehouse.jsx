@@ -19,13 +19,18 @@ const CreateWarehouse = (props) => {
     const createWarehouse = () => {
         if (validator(name) && validator(address)) {
             //если сохранился, удалять эти продукты из нераcпределенного склада
-            return props.createWarehouse({
-                name,
-                address,
-                id: Date.now(),
-                products
-            })
-            //redirect to /warehouses
+            if (!props.warehouses.filter(warehouse => warehouse.name === name)) {
+                props.createWarehouse({
+                    name,
+                    address,
+                    id: Date.now(),
+                    products
+                })
+                //redirect to /warehouses
+
+            } else {
+                Toast('Такой склад уже есть')
+            }
         } else {
             Toast('Введите корректные данные')
         }

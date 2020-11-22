@@ -29,20 +29,15 @@ const CreateProduct = (props) => {
 
                 props.createProduct({
                     name,
-                    id: date,
-                    warehouses: [{
-                        id: findWarehouse.id,
-                        name: findWarehouse.name,
-                        address: findWarehouse.address,
-                        quantity
-                    }]
+                    id: Number(date),
                 })
 
                 props.editWarehouse({
-                    ...findWarehouse, products: findWarehouse.products.concat({
-                        id: date,
+                    ...findWarehouse,
+                    products: findWarehouse.products.concat({
+                        id: Number(date),
                         name,
-                        quantity
+                        quantity: Number(quantity)
                     })
                 })
 
