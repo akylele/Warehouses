@@ -79,8 +79,12 @@ const ModalEditWarehouse = (props) => {
             <div>
                 <h5>Продукты</h5>
                 <List items={props.content.products}/>
-                {OwnerWarehouse.length > 0 && <List items={OwnerWarehouse[0].products} type="add"
-                                                    title="Вы можете добавить товары из нераспределенного склада в этот склад"/>}
+                {OwnerWarehouse.length > 0 &&
+                <List
+                    items={OwnerWarehouse[0].products}
+                    type="add"
+                    title="Вы можете добавить товары из общего склада в этот склад"
+                />}
             </div>
         </div>
     )
@@ -93,8 +97,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-    }
+    return {}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalEditWarehouse)

@@ -29,7 +29,7 @@ export default function Products(state = initialState, action) {
         case 'ADD_PRODUCT':
             return state.concat(action.value)
         case 'REMOVE_PRODUCT':
-            return state.filter(product => product.id !== action.value.id)
+            return state.filter(product => product.id !== action.value)
         default:
             return state
     }

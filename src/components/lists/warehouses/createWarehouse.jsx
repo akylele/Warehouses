@@ -18,9 +18,7 @@ const CreateWarehouse = (props) => {
 
     const createWarehouse = () => {
         if (validator(name) && validator(address)) {
-            //если сохранился, удалять эти продукты из нераcпределенного склада
             if (!props.warehouses.filter(warehouse => warehouse.name === name).length > 0) {
-
                 if (products) {
                     const generalWarehouse = props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
 
@@ -47,8 +45,7 @@ const CreateWarehouse = (props) => {
                     id: Date.now(),
                     products
                 })
-                //redirect to /warehouses
-
+                window.history.back()
             } else {
                 Toast('Такой склад уже есть')
             }
@@ -90,7 +87,7 @@ const CreateWarehouse = (props) => {
                 items={OwnerWarehouse[0].products}
                 type="add"
                 onAdd={onAdd}
-                title="Вы можете добавить товары из нераспределенного склада в этот склад"
+                title="Вы можете добавить товары из общего склада в этот склад"
             />}
         </>
     )

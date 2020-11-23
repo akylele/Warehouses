@@ -29,6 +29,21 @@ const ModalEditProduct = (props) => {
         Toast(`"${item.name}" --> "${value}", чтобы перенести нажмите "Перенести"`)
     }
 
+    const handleRemove = () => {
+        // eslint-disable-next-line no-restricted-globals
+        const res = confirm("Точно?")
+        if(res){
+            props.removeProduct(props.content.id)
+            props.warehouses.map(warehouse => {
+                return props.editWarehouse({...warehouse, products: warehouse.products.filter(prod => prod.id !== props.content.id)})
+            })
+            props.handleModal()
+        } else{
+            props.handleModal()
+        }
+
+    }
+
     return (
         <div className="modal open">
             <div className="modal-content">
@@ -53,7 +68,7 @@ const ModalEditProduct = (props) => {
                         </Row>
                         <Row>
                             <Col styles="s12">
-                                <Button onClick={() => props.handleModal()} styles="red">Удалить</Button>
+                                <Button onClick={() => handleRemove()} styles="red">Удалить</Button>
                             </Col>
                         </Row>
                     </>
@@ -69,12 +84,11 @@ const ModalEditProduct = (props) => {
                             />
                             <label className="active" htmlFor="first_name2">{props.content.name}</label>
                         </Col>
-                        <Col styles="s4">&nbsp;</Col>
-                        <Col styles="s6">
+                        <Col styles="s10">
                             <Row>
                                 <Button onClick={() => props.handleModal()} styles="margin">Отмена</Button>
                                 <Button onClick={() => props.handleModal()} styles="margin green">Сохранить</Button>
-                                <Button onClick={() => props.handleModal()} styles="margin red">Удалить</Button>
+                                <Button onClick={() => handleRemove()} styles="margin red">Удалить</Button>
                             </Row>
                         </Col>
                     </>
@@ -103,7 +117,6 @@ const ModalEditProduct = (props) => {
                         </Col>
                     </Row>
                     <ul className="collection">
-                        {console.log(props.content)}
                         {props.warehouses.map((warehouse, index) => {
                             return warehouse.products.map(product => {
                                 if (product.id === props.content.id) {
@@ -129,7 +142,7 @@ const ModalEditProduct = (props) => {
                                                     <select style={{display: 'block'}}
                                                             onChange={(e) => handleChangeSelect(warehouse, e.target.value)}>
                                                         <option value="empty" key={0} selected></option>
-                                                        {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
+                                                        {props.warehouses.length > 0 && props.warehouses.filter(warehouse => warehouse.name !== 'Общий склад').map((warehouse, index) => (
                                                             <option value={warehouse.name}
                                                                     key={index + 1}>{warehouse.name}</option>
                                                         ))}
@@ -160,7 +173,14 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {}
+    return {
+        removeProduct: (value) => {
+            dispatch({type: 'REMOVE_PRODUCT', value})
+        },
+        editWarehouse: (value) => {
+            dispatch({type: 'CHANGE_WAREHOUSE', value})
+        }
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalEditProduct)

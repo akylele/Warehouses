@@ -42,7 +42,7 @@ const CreateProduct = (props) => {
                 })
 
                 Toast(`Продукт '${name}' добавлен`)
-                //redirect to /products
+                window.history.back()
             } else {
                 Toast('Такой продукт существует')
             }
@@ -65,7 +65,7 @@ const CreateProduct = (props) => {
                         onChange={(e) => setWarehouse(e.target.value)}
                     >
                         <option value="" key={0} selected/>
-                        {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
+                        {props.warehouses.length > 0 && props.warehouses.filter(warehouse => warehouse.name !== 'Общий склад').map((warehouse, index) => (
                             <option
                                 value={warehouse.id}
                                 key={index + 1}
