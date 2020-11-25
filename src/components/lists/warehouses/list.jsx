@@ -12,7 +12,14 @@ const List = (props) => {
         if (products.length > 0 && products.filter(elem => elem.id === item.id).length > 0) {
             setProducts(products.map(elem => {
                 if (elem.id === item.id) {
-                    elem = {...elem, quantity: value}
+                    if (props.type === 'remove') {
+                        elem = {
+                            ...elem,
+                            quantity: props.items.filter(elem => elem.id === item.id).pop().quantity - value
+                        }
+                    } else {
+                        elem = {...elem, quantity: value}
+                    }
                 }
 
                 return elem
@@ -24,11 +31,16 @@ const List = (props) => {
         }
     }
 
-    const handleSaveWarehouse = (item) => {
-        if (props.type === 'add') {
-            return props.onAdd(products.filter(elem => elem.id === item.id).pop())
+    const handleWarehouse = (item) => {
+        if (props.type === 'remove') {
+            console.log(products.filter(elem => elem.id === item.id).pop())
+            props.onRemove(products.filter(elem => elem.id === item.id).pop())
+        } else {
+            props.onAdd(products.filter(elem => elem.id === item.id).pop())
         }
+
     }
+
 
     return (
         <>
@@ -69,12 +81,14 @@ const List = (props) => {
                                         min={1}
                                         max={item.quantity}
                                         defaultValue={0}
-                                        onChange={(e) => selectQuantity(item, e.target.value)}/>
+                                        onChange={(e) => selectQuantity(item, e.target.value)}
+                                        disabled={props.disabled}
+                                    />
                                     <label>всего на складе: {item.quantity}</label>
                                 </Col>
                                 <Col styles="s3">
                                     <Button
-                                        onClick={() => handleSaveWarehouse(item)}
+                                        onClick={() => handleWarehouse(item)}
                                         disabled={!products.filter(elem => elem.id === item.id).length > 0}
                                     >
                                         {props.type === 'add' ? 'Добавить' : 'Убрать'}

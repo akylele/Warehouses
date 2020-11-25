@@ -23,7 +23,7 @@ function useRoutes() {
             <Route path="/create_warehouse">
                 <CreateWarehousePage />
             </Route>
-            <Redirect to="/" />
+            <Redirect to="/warehouses" />
         </Switch>
     )
 }

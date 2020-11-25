@@ -66,7 +66,6 @@ export default function Warehouses(state = initialState, action) {
                 }
                 return warehouse
             })
-            console.log(newState)
             return newState.map(warehouse => ({...warehouse, products: warehouse.products.filter(prod => prod.quantity !== 0)}))
         case 'ADD_WAREHOUSE':
             return state.concat(action.value)
