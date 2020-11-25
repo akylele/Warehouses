@@ -42,7 +42,7 @@ const CreateProduct = (props) => {
                 })
 
                 Toast(`Продукт '${name}' добавлен`)
-                window.history.back()
+                props.onClose()
             } else {
                 Toast('Такой продукт существует')
             }
@@ -53,13 +53,15 @@ const CreateProduct = (props) => {
 
     return (
         <>
-            <SwitchPage/>
+            {/*<SwitchPage/>*/}
             <Row styles="centerRow">
-                <Col styles="input-field s3">
+                <Col styles="input-field s12">
                     <input type="text" onChange={(e) => setName(e.target.value)}/>
                     <label>Название</label>
                 </Col>
-                <Col styles="s3">
+            </Row>
+            <Row>
+                <Col styles="s12">
                     <select
                         style={{display: 'block'}}
                         onChange={(e) => setWarehouse(e.target.value)}
@@ -75,7 +77,9 @@ const CreateProduct = (props) => {
                         ))}
                     </select>
                 </Col>
-                <Col styles="input-field s3">
+            </Row>
+            <Row>
+                <Col styles="input-field s12">
                     <input
                         type="number"
                         onChange={(e) => setQuantity(e.target.value)}
@@ -84,7 +88,9 @@ const CreateProduct = (props) => {
                     />
                     <label>Количество</label>
                 </Col>
-                <Col styles="s3">
+            </Row>
+            <Row>
+                <Col styles="s12">
                     <Button onClick={() => createProduct()}>Создать</Button>
                 </Col>
             </Row>

@@ -100,14 +100,30 @@ const ModalEditWarehouse = (props) => {
     }
     return (
         <div className="modal open">
+            {isMobile && (
+                <Row>
+                    <Col styles="s6">
+                        <Button onClick={() => props.handleModal()}>
+                            <i className="large material-icons">arrow_back</i>
+                        </Button>
+                    </Col>
+                    <Col styles="s6">
+                        <Button onClick={() => props.handleModal()} styles="green">
+                            <i className="large material-icons">check_circle</i>
+                        </Button>
+                    </Col>
+                </Row>
+            )}
             <div className="modal-content">
                 <h4>Редактирование склада "{props.content.name}"</h4>
             </div>
-            {props.content.name === 'Общий склад' && <div className="card-panel red"><h5 className="red">Вы не можете редактировать товары и название этого склада</h5></div>}
+            {props.content.name === 'Общий склад' &&
+            <div className="card-panel red"><h5 className="red">Вы не можете редактировать товары и название этого
+                склада</h5></div>}
             {isMobile ? (
                 <>
                     <Row>
-                        <Col styles="s6">
+                        <Col styles="s12">
                             <input
                                 disabled={props.content.name === 'Общий склад'}
                                 defaultValue={props.content.name}
@@ -117,7 +133,9 @@ const ModalEditWarehouse = (props) => {
                                 onChange={(e) => handleChange('name', e.target.value)}
                             />
                         </Col>
-                        <Col styles="s6">
+                    </Row>
+                    <Row>
+                        <Col styles="s12">
                             <input
                                 defaultValue={props.content.address}
                                 id="address"
@@ -125,14 +143,6 @@ const ModalEditWarehouse = (props) => {
                                 className="validate"
                                 onChange={(e) => handleChange('address', e.target.value)}
                             />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col styles="s6">
-                            <Button onClick={() => props.handleModal()} styles="red">Отмена</Button>
-                        </Col>
-                        <Col styles="s6">
-                            <Button onClick={() => props.handleModal()}>Сохранить</Button>
                         </Col>
                     </Row>
                 </>

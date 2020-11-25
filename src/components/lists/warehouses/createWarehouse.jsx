@@ -45,7 +45,7 @@ const CreateWarehouse = (props) => {
                     id: Date.now(),
                     products
                 })
-                window.history.back()
+                props.onClose()
             } else {
                 Toast('Такой склад уже есть')
             }
@@ -69,7 +69,6 @@ const CreateWarehouse = (props) => {
 
     return (
         <>
-            <SwitchPage/>
             <Row styles="centerRow">
                 <Col styles="input-field s4">
                     <input type="text" onChange={(e) => setName(e.target.value)}/>

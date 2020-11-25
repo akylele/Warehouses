@@ -46,32 +46,36 @@ const ModalEditProduct = (props) => {
 
     return (
         <div className="modal open">
+            {isMobile && (
+                <Row>
+                    <Col styles="s4">
+                        <Button onClick={() => props.handleModal()}>
+                            <i className="large material-icons">arrow_back</i>
+                        </Button>
+                    </Col>
+                    <Col styles="s4">
+                        <Button onClick={() => props.handleModal()} styles="green">
+                            <i className="large material-icons">check_circle</i>
+                        </Button>
+                    </Col>
+                    <Col styles="s4">
+                        <Button onClick={() => handleRemove()} styles="red">
+                            <i className="large material-icons">delete</i>
+                        </Button>
+                    </Col>
+                </Row>
+            )}
             <div className="modal-content">
                 <h4>Редактирование продукта "{props.content.name}"</h4>
             </div>
             <Row>
                 {isMobile ? (
-                    <>
-                        <Row>
-                            <Col styles="s12">
-                                <input defaultValue={props.content.name} id="name" type="text" className="validate"
-                                       onChange={(e) => handleChange('name', e.target.value)}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col styles="s6">
-                                <Button onClick={() => props.handleModal()}>Отмена</Button>
-                            </Col>
-                            <Col styles="s6">
-                                <Button onClick={() => props.handleModal()} styles="green">Сохранить</Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col styles="s12">
-                                <Button onClick={() => handleRemove()} styles="red">Удалить</Button>
-                            </Col>
-                        </Row>
-                    </>
+                    <Row>
+                        <Col styles="s12">
+                            <input defaultValue={props.content.name} id="name" type="text" className="validate"
+                                   onChange={(e) => handleChange('name', e.target.value)}/>
+                        </Col>
+                    </Row>
                 ) : (
                     <>
                         <Col styles="s2">

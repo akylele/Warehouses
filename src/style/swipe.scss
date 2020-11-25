@@ -1,0 +1,28 @@
+.swipe {
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  top: 80vh;
+  z-index: 10;
+  left: 15%;
+  transform: translate(-50%, 0);
+  -webkit-animation: move 5s 1;
+  animation: move 5s 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes move {
+  0% {
+    left: 15%;
+  }
+  30% {
+    left: 85%;
+  }
+  60% {
+    left: 85%;
+  }
+  100% {
+    left: 15%;
+    opacity: 0;
+  }
+}
