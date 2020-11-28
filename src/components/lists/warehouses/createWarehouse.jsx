@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import {connect} from "react-redux";
 
-import SwitchPage from "../../SwitchPage";
 import Row from "../../basic/row";
 import Col from "../../basic/col";
 import Button from "../../basic/button";

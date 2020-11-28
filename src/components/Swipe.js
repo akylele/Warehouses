@@ -5,7 +5,7 @@ import '../style/swipe.scss'
 
 const Swipe = () => (
     <div className="swipe">
-        <img src={swipeImg}/>
+        <img src={swipeImg} alt="swipeHand"/>
     </div>
 )
 

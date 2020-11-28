@@ -22,7 +22,7 @@ const CreateProduct = (props) => {
                 let findWarehouse
 
                 if (warehouse) {
-                    findWarehouse = props.warehouses.filter(elem => elem.id == warehouse).pop()
+                    findWarehouse = props.warehouses.filter(elem => elem.id === Number(warehouse)).pop()
                 } else {
                     findWarehouse = props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
                 }

@@ -120,38 +120,26 @@ const ProductsList = (props) => {
                                         </Row>
                                         <Row>
                                             <Col styles="s6">
-                                                {props.warehouses.map(warehouse => warehouse.products.map(prod => {
-                                                    if (prod.id === product.id) {
-                                                        return (
-                                                            <Row key={index}>
-                                                                <span>{warehouse.address}</span>
-                                                            </Row>
-                                                        )
-                                                    }
-                                                }))}
+                                                {props.warehouses.map(warehouse => warehouse.products.map(prod => prod.id === product.id && (
+                                                    <Row key={index}>
+                                                        <span>{warehouse.address}</span>
+                                                    </Row>
+                                                )))}
                                             </Col>
                                             <Col styles="s4">
-                                                {props.warehouses.map(warehouse => warehouse.products.map(prod => {
-                                                    if (prod.id === product.id) {
-                                                        return (
-                                                            <Row key={index}>
-                                                                <span>{warehouse.name}</span>
-                                                            </Row>
-                                                        )
-                                                    }
-                                                }))
+                                                {props.warehouses.map(warehouse => warehouse.products.map(prod => prod.id === product.id &&
+                                                    <Row key={index}>
+                                                        <span>{warehouse.name}</span>
+                                                    </Row>
+                                                ))
                                                 }
                                             </Col>
                                             <Col styles="s2">
-                                                {props.warehouses.map(warehouse => warehouse.products.map(prod => {
-                                                    if (prod.id === product.id) {
-                                                        return (
-                                                            <Row key={index}>
-                                                                <span>{prod.quantity}</span>
-                                                            </Row>
-                                                        )
-                                                    }
-                                                }))}
+                                                {props.warehouses.map(warehouse => warehouse.products.map(prod => prod.id === product.id &&
+                                                    <Row key={index}>
+                                                        <span>{prod.quantity}</span>
+                                                    </Row>
+                                                ))}
                                             </Col>
                                         </Row>
                                     </div>
@@ -163,38 +151,25 @@ const ProductsList = (props) => {
                                             </Row>
                                         </Col>
                                         <Col styles="s2">
-                                            {props.warehouses.map(warehouse => warehouse.products.map(prod => {
-                                                if (prod.id === product.id) {
-                                                    return (
-                                                        <Row key={index}>
-                                                            <span>{warehouse.address}</span>
-                                                        </Row>
-                                                    )
-                                                }
-                                            }))}
+                                            {props.warehouses.map(warehouse => warehouse.products.map(prod => prod.id === product.id &&
+                                                <Row key={index}>
+                                                    <span>{warehouse.address}</span>
+                                                </Row>
+                                            ))}
                                         </Col>
                                         <Col styles="s3">
-                                            {props.warehouses.map(warehouse => warehouse.products.map(prod => {
-                                                if (prod.id === product.id) {
-                                                    return (
-                                                        <Row key={index}>
-                                                            <span>{warehouse.name}</span>
-                                                        </Row>
-                                                    )
-                                                }
-                                            }))
-                                            }
+                                            {props.warehouses.map(warehouse => warehouse.products.map(prod => prod.id === product.id &&
+                                                <Row key={index}>
+                                                    <span>{warehouse.name}</span>
+                                                </Row>
+                                            ))}
                                         </Col>
                                         <Col styles="s2">
-                                            {props.warehouses.map(warehouse => warehouse.products.map(prod => {
-                                                if (prod.id === product.id) {
-                                                    return (
-                                                        <Row key={index}>
-                                                            <span>{prod.quantity}</span>
-                                                        </Row>
-                                                    )
-                                                }
-                                            }))}
+                                            {props.warehouses.map(warehouse => warehouse.products.map(prod => prod.id === product.id &&
+                                                <Row key={index}>
+                                                    <span>{prod.quantity}</span>
+                                                </Row>
+                                            ))}
                                         </Col>
                                         <Col styles="s3">
                                             <Row>

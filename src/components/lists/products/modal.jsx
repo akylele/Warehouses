@@ -228,6 +228,8 @@ const ModalEditProduct = (props) => {
                                         </Row>
                                     </li>
                                 )
+                            } else {
+                                return null
                             }
                         })
                     })}
