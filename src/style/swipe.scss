@@ -13,16 +13,16 @@
 
 @keyframes move {
   0% {
-    left: 15%;
+    left: 85%;
   }
   30% {
-    left: 85%;
+    left: 15%;
   }
   60% {
-    left: 85%;
+    left: 15%;
   }
   100% {
-    left: 15%;
+    left: 85%;
     opacity: 0;
   }
 }

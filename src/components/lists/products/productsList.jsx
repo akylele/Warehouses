@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import {isMobile} from 'react-device-detect'
+import {isMobile, isTablet} from 'react-device-detect'
 import {connect} from "react-redux";
 
 import Button from '../../basic/button'
 import ModalEditProduct from "./modal";
 import Toast from "../../../helpers/toast";
-import CreateProduct from "./createProduct";
 import Swipe from "../../Swipe";
 import Row from '../../basic/row'
 import Col from '../../basic/col'
 
 import '../../../style/productsList.scss'
+import {Link} from "react-router-dom";
+import CreateProduct from "./createProduct";
 
 
 const ProductsList = (props) => {
@@ -21,7 +22,6 @@ const ProductsList = (props) => {
 
 
     useEffect(() => {
-        console.log(screenXStart, screenXEnd)
         if (screenXStart && screenXEnd) {
             if (screenXStart > screenXEnd) {
                 setStyle(0)
@@ -29,7 +29,7 @@ const ProductsList = (props) => {
                 if (screenXEnd - screenXStart > 100) {
                     setStyle(100)
                 }
-            } else {}
+            }
         }
     }, [screenXStart, screenXEnd])
 
@@ -47,10 +47,18 @@ const ProductsList = (props) => {
         setStyle(100)
     }
 
-
     return (
         <>
             {modalContent && <ModalEditProduct handleModal={handleModal} content={modalContent}/>}
+            {!isMobile && <Row styles="right">
+                <Link to="/create_product">
+                    <Col>
+                        <Button>
+                            Создать продукт
+                        </Button>
+                    </Col>
+                </Link>
+            </Row>}
             <div
                 onTouchStart={event => {
                     setScreenXStart(event.changedTouches[0].screenX)
@@ -59,19 +67,23 @@ const ProductsList = (props) => {
                 onTouchEnd={event => setScreenXEnd(event.changedTouches[0].screenX)}
                 style={{position: 'relative'}}
             >
-                <div style={{
-                    width: '100%',
-                    height: '100%',
-                    position: 'absolute',
-                    left: `${style}%`,
-                    transitionDuration: '1s',
-                    zIndex: '10',
-                    backdropFilter: 'blur(10px)'
-                }}>
-                    <CreateProduct onClose={onClose}/>
-                </div>
-                <Swipe />
-                <div className={isMobile ? "main" : ""}>
+                {(isMobile || isTablet) && (
+                    <>
+                        <div style={{
+                            width: '100%',
+                            height: '100%',
+                            position: 'absolute',
+                            left: `${style}%`,
+                            transitionDuration: '1s',
+                            zIndex: '10',
+                            backdropFilter: 'blur(10px)'
+                        }}>
+                            <CreateProduct onClose={onClose}/>
+                        </div>
+                        <Swipe/>
+                    </>
+                )}
+                <div>
                     {!isMobile && (
                         <Row styles="titles">
                             <Col styles="s2">
@@ -93,7 +105,8 @@ const ProductsList = (props) => {
                     )}
                     <ul className="collection">
                         {props.products.length > 0 && props.products.map((product, index) => (
-                            <li className={`collection-item ${!(index % 2) ? '#e3f2fd blue lighten-5' : ''}`} key={index}>
+                            <li className={`collection-item ${!(index % 2) ? '#e3f2fd blue lighten-5' : ''}`}
+                                key={index}>
                                 {isMobile ? (
                                     <div
                                         onClick={() => {
@@ -102,9 +115,7 @@ const ProductsList = (props) => {
                                     >
                                         <Row>
                                             <Col styles="s12">
-                                                <Row>
-                                                    <h5>{product.name}</h5>
-                                                </Row>
+                                                <h5>{product.name}</h5>
                                             </Col>
                                         </Row>
                                         <Row>
@@ -114,7 +125,6 @@ const ProductsList = (props) => {
                                                         return (
                                                             <Row key={index}>
                                                                 <span>{warehouse.address}</span>
-                                                                <hr/>
                                                             </Row>
                                                         )
                                                     }
@@ -126,7 +136,6 @@ const ProductsList = (props) => {
                                                         return (
                                                             <Row key={index}>
                                                                 <span>{warehouse.name}</span>
-                                                                <hr/>
                                                             </Row>
                                                         )
                                                     }
@@ -139,7 +148,6 @@ const ProductsList = (props) => {
                                                         return (
                                                             <Row key={index}>
                                                                 <span>{prod.quantity}</span>
-                                                                <hr/>
                                                             </Row>
                                                         )
                                                     }
@@ -189,12 +197,14 @@ const ProductsList = (props) => {
                                             }))}
                                         </Col>
                                         <Col styles="s3">
-                                            <Button
-                                                onClick={() => {
-                                                    setModalContent(product)
-                                                }}>
-                                                Редактирование
-                                            </Button>
+                                            <Row>
+                                                <Button
+                                                    onClick={() => {
+                                                        setModalContent(product)
+                                                    }}>
+                                                    Редактирование
+                                                </Button>
+                                            </Row>
                                         </Col>
                                     </Row>
                                 )}

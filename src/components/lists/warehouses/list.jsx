@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import {isMobile} from "react-device-detect";
 
 import Row from "../../basic/row";
 import Col from "../../basic/col";
@@ -33,7 +32,6 @@ const List = (props) => {
 
     const handleWarehouse = (item) => {
         if (props.type === 'remove') {
-            console.log(products.filter(elem => elem.id === item.id).pop())
             props.onRemove(products.filter(elem => elem.id === item.id).pop())
         } else {
             props.onAdd(products.filter(elem => elem.id === item.id).pop())
@@ -45,7 +43,7 @@ const List = (props) => {
     return (
         <>
             {props.title && <h5>{props.title}</h5>}
-            <div className={isMobile ? "main" : ''}>
+            <div>
                 <Row styles="titles">
                     <Col styles="s3">
                         <span>Название</span>

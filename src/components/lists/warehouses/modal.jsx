@@ -12,7 +12,7 @@ import '../../../style/modal.scss'
 const ModalEditWarehouse = (props) => {
     const [form, setForm] = useState({})
     const [productsForRemove, setProductsForRemove] = useState([])
-    const OwnerWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад')
+    const generalWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
 
     useEffect(() => {
         setForm({
@@ -194,9 +194,9 @@ const ModalEditWarehouse = (props) => {
                     onRemove={onRemove}
                     disabled={props.content.name === 'Общий склад'}
                 />
-                {OwnerWarehouse.length > 0 && props.content.name !== 'Общий склад' &&
+                {props.content.name !== 'Общий склад' &&
                 <List
-                    items={OwnerWarehouse[0].products}
+                    items={generalWarehouse.products}
                     type="add"
                     title="Вы можете добавить товары из общего склада в этот склад"
                     onAdd={onAdd}

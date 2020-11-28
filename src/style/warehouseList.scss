@@ -4,12 +4,4 @@
 
 .collection, .titles {
   width: 100%;
-  @media (min-width: 770px) {
-    min-width: 1000px;
-  }
-}
-
-.main {
-  width: 100%!important;
-  overflow-x: scroll;
 }

@@ -45,7 +45,11 @@ const CreateWarehouse = (props) => {
                     id: Date.now(),
                     products
                 })
-                props.onClose()
+                if (props.onClose) {
+                    props.onClose()
+                } else {
+                    window.history.back()
+                }
             } else {
                 Toast('Такой склад уже есть')
             }

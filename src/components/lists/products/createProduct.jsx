@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import {connect} from 'react-redux';
 
-import SwitchPage from "../../SwitchPage";
 import Row from "../../basic/row";
 import Col from "../../basic/col";
 import Button from "../../basic/button";
@@ -9,6 +8,7 @@ import Button from "../../basic/button";
 import '../../../style/createProduct.scss'
 import validator from "../../../helpers/validation";
 import Toast from "../../../helpers/toast";
+
 
 const CreateProduct = (props) => {
     const [name, setName] = useState('')
@@ -42,7 +42,11 @@ const CreateProduct = (props) => {
                 })
 
                 Toast(`Продукт '${name}' добавлен`)
-                props.onClose()
+                if (props.onClose) {
+                    props.onClose()
+                } else {
+                    window.history.back()
+                }
             } else {
                 Toast('Такой продукт существует')
             }
@@ -53,7 +57,6 @@ const CreateProduct = (props) => {
 
     return (
         <>
-            {/*<SwitchPage/>*/}
             <Row styles="centerRow">
                 <Col styles="input-field s12">
                     <input type="text" onChange={(e) => setName(e.target.value)}/>

@@ -1,21 +1,29 @@
 import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import {Switch, Route, Redirect} from 'react-router-dom'
 
 import WarehousePage from './pages/warehouseListPage'
 import ProductsPage from './pages/productsListPage'
+import CreateProductPage from './pages/createProductPage'
+import CreateWarehousePage from './pages/createWarehousePage'
 
 function useRoutes() {
-
     return (
         <Switch>
             <Route path="/warehouses">
-                <WarehousePage />
+                <WarehousePage/>
             </Route>
             <Route path="/products">
-                <ProductsPage />
+                <ProductsPage/>
             </Route>
-            <Redirect to="/warehouses" />
+            <Route path="/create_product">
+                <CreateProductPage/>
+            </Route>
+            <Route path="/create_warehouse">
+                <CreateWarehousePage/>
+            </Route>
+            <Redirect to="/warehouses"/>
         </Switch>
     )
 }
+
 export default useRoutes

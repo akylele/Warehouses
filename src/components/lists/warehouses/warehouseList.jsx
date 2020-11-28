@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import {isMobile} from 'react-device-detect'
+import {isMobile, isTablet} from 'react-device-detect'
 import {connect} from "react-redux";
 
 import ModalEditWarehouse from './modal'
 import Row from '../../basic/row'
 import Col from '../../basic/col'
 import Button from '../../basic/button'
-import SwitchPage from "../../SwitchPage";
 
 import '../../../style/warehouseList.scss'
-import CreateProduct from "../products/createProduct";
 import Swipe from "../../Swipe";
 import CreateWarehouse from "./createWarehouse";
+import Toast from "../../../helpers/toast";
+import {Link} from "react-router-dom";
 
 
 const WarehouseList = (props) => {
@@ -22,7 +22,6 @@ const WarehouseList = (props) => {
 
 
     useEffect(() => {
-        console.log(screenXStart, screenXEnd)
         if (screenXStart && screenXEnd) {
             if (screenXStart > screenXEnd) {
                 setStyle(0)
@@ -30,9 +29,15 @@ const WarehouseList = (props) => {
                 if (screenXEnd - screenXStart > 100) {
                     setStyle(100)
                 }
-            } else {}
+            }
         }
     }, [screenXStart, screenXEnd])
+
+    useEffect(() => {
+        if (isMobile) {
+            Toast('Для редактирования нажмите на блок')
+        }
+    }, [])
 
     const handleModal = () => {
         setModalContent(null)
@@ -43,108 +48,139 @@ const WarehouseList = (props) => {
     }
 
     return (
-        <div
-            onTouchStart={event => {
-                setScreenXStart(event.changedTouches[0].screenX)
-                setScreenXEnd(null)
-            }}
-            onTouchEnd={event => setScreenXEnd(event.changedTouches[0].screenX)}
-            style={{position: 'relative'}}
-        >
-            <div style={{
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                left: `${style}%`,
-                transitionDuration: '1s',
-                zIndex: '10',
-                backdropFilter: 'blur(10px)'
-            }}>
-                <CreateWarehouse onClose={onClose}/>
-            </div>
-            <Swipe/>
+        <>
             {modalContent && <ModalEditWarehouse handleModal={handleModal} content={modalContent}/>}
-            <div className={isMobile ? "main" : ""}>
-                {!isMobile && <Row styles="titles">
-                    <Col styles="s3">
-                        <span>Название</span>
+            {!isMobile && <Row styles="right">
+                <Link to="/create_warehouse">
+                    <Col>
+                        <Button>
+                            Создать склад
+                        </Button>
                     </Col>
-                    <Col styles="s3">
-                        <span>Товары на складе</span>
-                    </Col>
-                    <Col styles="s3">
-                        <span>Количество товаров на складе</span>
-                    </Col>
-                    <Col styles="s3">
-                        <span>Действие</span>
-                    </Col>
-                </Row>}
-                <ul className="collection with-header">
-                    {props.warehouses.length > 0 && props.warehouses.map((item, index) => (
-                        <li className={`collection-item ${!(index % 2) ? '#e3f2fd blue lighten-5' : ''}`} key={index}>
-                            {isMobile ? (
-                                <div
-                                    onClick={() => {
-                                        setModalContent(item)
-                                    }}
-                                >
+                </Link>
+            </Row>}
+            <div
+                onTouchStart={event => {
+                    setScreenXStart(event.changedTouches[0].screenX)
+                    setScreenXEnd(null)
+                }}
+                onTouchEnd={event => setScreenXEnd(event.changedTouches[0].screenX)}
+                style={{position: 'relative'}}
+            >
+                {(isMobile || isTablet) && (
+                    <>
+                        <div style={{
+                            width: '100%',
+                            height: '100%',
+                            position: 'absolute',
+                            left: `${style}%`,
+                            transitionDuration: '1s',
+                            zIndex: '10',
+                            backdropFilter: 'blur(10px)'
+                        }}>
+                            <CreateWarehouse onClose={onClose}/>
+                        </div>
+                        <Swipe/>
+                    </>
+                )}
+                <div>
+                    {!isMobile && <Row styles="titles">
+                        <Col styles="s3">
+                            <span>Название</span>
+                        </Col>
+                        <Col styles="s2">
+                            <span>Адрес</span>
+                        </Col>
+                        <Col styles="s2">
+                            <span>Товар</span>
+                        </Col>
+                        <Col styles="s2">
+                            <span>Количество</span>
+                        </Col>
+                        <Col styles="s3">
+                            <span>Действие</span>
+                        </Col>
+                    </Row>}
+                    <ul className="collection with-header">
+                        {props.warehouses.length > 0 && props.warehouses.map((item, index) => (
+                            <li className={`collection-item ${!(index % 2) ? '#e3f2fd blue lighten-5' : ''}`}
+                                key={index}>
+                                {isMobile ? (
+                                    <div
+                                        onClick={() => {
+                                            setModalContent(item)
+                                        }}
+                                    >
+                                        <Row>
+                                            <Col styles="s12">
+                                                <h5>{item.name}</h5>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col styles="s12">
+                                                <h5>{item.address}</h5>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col styles="s6">
+                                                {item.products.map((product, index) => (
+                                                    <Row key={index}>
+                                                        <span>{product.name}</span>
+                                                    </Row>
+                                                ))}
+                                            </Col>
+                                            <Col styles="s6">
+                                                {item.products.map((product, index) => (
+                                                    <Row key={index}>
+                                                        <span>{product.quantity}</span>
+                                                    </Row>
+                                                ))}
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                ) : (
                                     <Row>
-                                        <Col styles="s12">
-                                            <h5>{item.name}</h5>
+                                        <Col styles="s3">
+                                            <Row>
+                                                <span>{item.name}</span>
+                                            </Row>
                                         </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col styles="s6">
+                                        <Col styles="s2">
+                                            <Row>
+                                                <span>{item.address}</span>
+                                            </Row>
+                                        </Col>
+                                        <Col styles="s2">
                                             {item.products.map((product, index) => (
                                                 <Row key={index}>
                                                     <span>{product.name}</span>
-                                                    <hr/>
                                                 </Row>
                                             ))}
                                         </Col>
-                                        <Col styles="s6">
+                                        <Col styles="s2">
                                             {item.products.map((product, index) => (
                                                 <Row key={index}>
                                                     <span>{product.quantity}</span>
-                                                    <hr/>
                                                 </Row>
                                             ))}
                                         </Col>
+                                        <Col styles="s3">
+                                            <Row>
+                                                <Button onClick={() => {
+                                                    setModalContent(item)
+                                                }}>
+                                                    Редактирование
+                                                </Button>
+                                            </Row>
+                                        </Col>
                                     </Row>
-                                </div>
-                            ) : (
-                                <Row>
-                                    <Col styles="s3">
-                                        <span>{item.name}</span>
-                                    </Col>
-                                    <Col styles="s3">
-                                        {item.products.map((product, index) => (
-                                            <Row key={index}>
-                                                <span>{product.name}</span>
-                                            </Row>
-                                        ))}
-                                    </Col>
-                                    <Col styles="s3">
-                                        {item.products.map((product, index) => (
-                                            <Row key={index}>
-                                                <span>{product.quantity}</span>
-                                            </Row>
-                                        ))}
-                                    </Col>
-                                    <Col styles="s3">
-                                        <Button onClick={() => {
-                                            setModalContent(item)
-                                        }}>
-                                            Редактирование
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
