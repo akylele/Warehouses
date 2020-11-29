@@ -11,7 +11,8 @@ import '../../../style/modal.scss'
 
 const ModalEditWarehouse = (props) => {
     const [form, setForm] = useState({})
-    const [productsForRemove, setProductsForRemove] = useState([])
+    const [productsForRemoveFromGeneral, setProductsForRemoveFromGeneral] = useState([])
+    const [productsForAddIntoGeneral, setProductsForAddIntoGeneral] = useState([])
     const generalWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
 
     useEffect(() => {
@@ -28,16 +29,17 @@ const ModalEditWarehouse = (props) => {
     }
 
     const handleSave = () => {
-        const findWarehouse = props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
+        let itemsOutsideGeneral = productsForAddIntoGeneral.filter(elem => !generalWarehouse.products.map(el => el.id).includes(elem.id))
+
         props.editWarehouse({
             ...form
         })
 
-        if (productsForRemove.length > 0) {
+        if (productsForRemoveFromGeneral.length > 0) {
             props.editWarehouse({
-                ...findWarehouse,
-                products: findWarehouse.products.map(elem => {
-                    const findItem = productsForRemove.filter(el => el.id === elem.id)
+                ...generalWarehouse,
+                products: generalWarehouse.products.map(elem => {
+                    const findItem = productsForRemoveFromGeneral.filter(el => el.id === elem.id)
                     if (findItem.length > 0) {
                         elem = {
                             ...elem,
@@ -49,9 +51,32 @@ const ModalEditWarehouse = (props) => {
             })
         }
 
+        if (productsForAddIntoGeneral.length > 0) {
+            let findItem
+
+            let newArr = generalWarehouse.products.map(elem => {
+                findItem = productsForAddIntoGeneral.filter(el => el.id === elem.id)
+                if (findItem.length > 0) {
+                    elem = {
+                        ...elem,
+                        quantity: elem.quantity + findItem.pop().quantity
+                    }
+                }
+                return elem
+            })
+
+            if (itemsOutsideGeneral.length > 0) {
+                newArr = newArr.concat(itemsOutsideGeneral)
+            }
+
+            props.editWarehouse({
+                ...generalWarehouse,
+                products: newArr
+            })
+        }
+
         props.handleModal()
     }
-
     const onRemove = (item) => {
         setForm({
             ...form,
@@ -65,17 +90,19 @@ const ModalEditWarehouse = (props) => {
                 return elem
             })
         })
+
+        setProductsForAddIntoGeneral(productsForAddIntoGeneral.concat({...item}))
     }
     const onAdd = (item) => {
-        if (productsForRemove.length > 0 && productsForRemove.filter(elem => elem.id === item.id).length > 0) {
-            setProductsForRemove(productsForRemove.map(elem => {
+        if (productsForRemoveFromGeneral.length > 0 && productsForRemoveFromGeneral.filter(elem => elem.id === item.id).length > 0) {
+            setProductsForRemoveFromGeneral(productsForRemoveFromGeneral.map(elem => {
                 if (elem.id === item.id) {
                     elem = item
                 }
                 return elem
             }))
         } else {
-            setProductsForRemove(productsForRemove.concat(item))
+            setProductsForRemoveFromGeneral(productsForRemoveFromGeneral.concat(item))
         }
 
         if (form.products.filter(elem => elem.id === item.id).length > 0) {
@@ -108,7 +135,7 @@ const ModalEditWarehouse = (props) => {
                         </Button>
                     </Col>
                     <Col styles="s6">
-                        <Button onClick={() => props.handleModal()} styles="green">
+                        <Button onClick={() => handleSave()} styles="green">
                             <i className="large material-icons">check_circle</i>
                         </Button>
                     </Col>
@@ -118,8 +145,11 @@ const ModalEditWarehouse = (props) => {
                 <h4>Редактирование склада "{props.content.name}"</h4>
             </div>
             {props.content.name === 'Общий склад' &&
-            <div className="card-panel red"><h5 className="red">Вы не можете редактировать товары и название этого
-                склада</h5></div>}
+            <div className="card-panel red">
+                <h5 className="red">
+                    Вы не можете редактировать товары и название этого склада
+                </h5>
+            </div>}
             {isMobile ? (
                 <>
                     <Row>
@@ -193,6 +223,7 @@ const ModalEditWarehouse = (props) => {
                     title="Продукты"
                     onRemove={onRemove}
                     disabled={props.content.name === 'Общий склад'}
+                    warehouseTitle={props.content.name}
                 />
                 {props.content.name !== 'Общий склад' &&
                 <List

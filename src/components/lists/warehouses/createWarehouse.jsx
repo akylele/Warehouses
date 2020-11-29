@@ -13,14 +13,12 @@ const CreateWarehouse = (props) => {
     const [name, setName] = useState('')
     const [address, setAddress] = useState('')
     const [products, setProducts] = useState([])
-    const OwnerWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад')
+    const generalWarehouse = props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
 
     const createWarehouse = () => {
         if (validator(name) && validator(address)) {
             if (!props.warehouses.filter(warehouse => warehouse.name === name).length > 0) {
                 if (products) {
-                    const generalWarehouse = props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
-
                     props.editWarehouse({
                         ...generalWarehouse,
                         products: generalWarehouse.products.map(prod => {
@@ -85,8 +83,8 @@ const CreateWarehouse = (props) => {
                     <Button onClick={() => createWarehouse()}>Создать</Button>
                 </Col>
             </Row>
-            {OwnerWarehouse.length > 0 && <List
-                items={OwnerWarehouse[0].products}
+            {generalWarehouse.products.length > 0 && <List
+                items={generalWarehouse.products}
                 type="add"
                 onAdd={onAdd}
                 title="Вы можете добавить товары из общего склада в этот склад"

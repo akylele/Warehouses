@@ -4,10 +4,11 @@ const Row = (props) => {
 
     const style = () => {
         if(props.styles){
+            console.log(props.styles.includes('right'))
             switch (props.styles) {
-                case props.styles.indexOf('right'):
+                case props.styles.includes('right'):
                     return 'right'
-                case props.styles.indexOf('left'):
+                case props.styles.includes('left'):
                     return 'left'
                 default:
                     return 'center'

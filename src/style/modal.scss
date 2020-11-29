@@ -1,18 +1,18 @@
 .modal {
-  display: block!important;
+  display: block !important;
   z-index: 10;
-  width: 90%;
-  height: 90%;
-  max-height: 90%;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
   box-shadow: 0 0 30px 1px grey;
   position: absolute;
-  top: 50%;
-  transform: translate(0, -50%);
+  top: 0;
   overflow: auto;
+  padding: 5%;
 }
 
 .margin {
-  margin: 0 15px!important;
+  margin: 0 15px !important;
 }
 
 .row {
@@ -20,5 +20,12 @@
 }
 
 .btn {
-    min-width: 70px;
+  min-width: 70px;
+  max-width: 90px;
+  text-overflow: ellipsis;
+
+  @media (min-width: 768px) {
+    min-width: 120px;
+    max-width: none;
+  }
 }

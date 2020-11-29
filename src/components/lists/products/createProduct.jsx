@@ -86,7 +86,6 @@ const CreateProduct = (props) => {
                     <input
                         type="number"
                         onChange={(e) => setQuantity(e.target.value)}
-                        defaultValue={1}
                         min={1}
                     />
                     <label>Количество</label>

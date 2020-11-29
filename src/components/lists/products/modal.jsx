@@ -11,7 +11,7 @@ import '../../../style/modal.scss'
 
 const ModalEditProduct = (props) => {
     const [fields, setFields] = useState({name: '', products: []})
-    const [fieldsForChange, setFieldsForChange] = useState([])
+    const [disabled, setDisabled] = useState([])
     const generalWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
 
     useEffect(() => {
@@ -19,6 +19,7 @@ const ModalEditProduct = (props) => {
             name: props.content.name,
             products: props.warehouses.map(warehouse => ({
                 ...warehouse.products.filter(prod => prod.id === props.content.id).pop(),
+                quantity: 0,
                 warehouseId: warehouse.id
             }))
         })
@@ -28,14 +29,14 @@ const ModalEditProduct = (props) => {
         setFields({...fields, name: value})
     }
 
-    const handleChangeSelect = (item, intoWarehouse) => {
-        if (item.id === intoWarehouse) {
+    const handleChangeSelect = (warehouse, intoWarehouse) => {
+        if (warehouse.id === intoWarehouse) {
             return Toast(`Товар уже находится в этом складе`)
         } else {
             setFields(prev => ({
                 ...prev,
                 products: prev.products.map(prod => {
-                    if (prod.warehouseId === item.id) {
+                    if (prod.warehouseId === warehouse.id) {
                         prod = {
                             ...prod,
                             into: Number(intoWarehouse)
@@ -45,7 +46,7 @@ const ModalEditProduct = (props) => {
                 })
             }))
         }
-        Toast(`"${item.name}" --> "${intoWarehouse === generalWarehouse.id ? 'Общий' : intoWarehouse}", чтобы перенести нажмите "Перенести"`)
+        // Toast(`"${warehouse.name}" --> "${intoWarehouse === generalWarehouse.id ? 'Общий' : intoWarehouse}", чтобы перенести нажмите "Перенести"`)
     }
 
     const handleChangeProduct = (warehouseId, product, value) => {
@@ -69,21 +70,76 @@ const ModalEditProduct = (props) => {
         //     }))
         // }
     }
+    console.log(fields.products)
 
     const handleTransfer = (indexProduct) => {
-        if(fieldsForChange.length > 0){
+        if (!fields.products[indexProduct].into) {
+            return Toast('Выберите склад отличающийся от нынешнего')
+        }
+        if (fields.products[indexProduct].quantity > 0) {
 
-        }else{
-            Toast('Вы еще ничего не выбирали')
+            setFields(prev => ({
+                ...prev,
+                products: prev.products.map((prod, index) => {
+                    if (index === indexProduct) {
+                        prod = {
+                            ...prod,
+                            type: 'transfer',
+                        }
+                    }
+                    return prod
+                })
+            }))
+
+            setDisabled(disabled.concat(indexProduct))
+        } else {
+            Toast('Вы не выбрали количество')
         }
     }
 
-    const handleAdd = (product) => {
+    const handleAdd = (indexProduct, product) => {
+        if (fields.products[indexProduct].quantity > 0) {
+
+            setFields(prev => ({
+                ...prev,
+                products: prev.products.map((prod, index) => {
+                    if (index === indexProduct) {
+                        prod = {
+                            ...prod,
+                            type: 'add',
+                        }
+                    }
+                    return prod
+                })
+            }))
+
+            setDisabled(disabled.concat(indexProduct))
+        } else {
+            Toast('Вы не выбрали количество')
+        }
 
     }
 
-    const handleRemove = (product) => {
+    const handleRemove = (indexProduct, product) => {
+        if (fields.products[indexProduct].quantity > 0) {
 
+            setFields(prev => ({
+                ...prev,
+                products: prev.products.map((prod, index) => {
+                    if (index === indexProduct) {
+                        prod = {
+                            ...prod,
+                            type: 'remove',
+                        }
+                    }
+                    return prod
+                })
+            }))
+
+            setDisabled(disabled.concat(indexProduct))
+        } else {
+            Toast('Вы не выбрали количество')
+        }
     }
 
     const handleDelete = () => {
@@ -104,6 +160,74 @@ const ModalEditProduct = (props) => {
 
     }
 
+    const handleSave = () => {
+        fields.products.map(elem => {
+            let findWarehouse
+            switch (elem.type) {
+                case 'add':
+                    findWarehouse = props.warehouses.filter(el => el.id === elem.warehouseId).pop()
+                    props.editWarehouse({
+                        ...findWarehouse,
+                        products: findWarehouse.products.map(prod => {
+                            if (prod.id === elem.id) {
+                                prod = {
+                                    ...prod,
+                                    quantity: prod.quantity + elem.quantity
+                                }
+                            }
+                            return prod
+                        })
+                    })
+                    break;
+                case 'remove':
+                    findWarehouse = props.warehouses.filter(el => el.id === elem.warehouseId).pop()
+                    props.editWarehouse({
+                        ...findWarehouse,
+                        products: findWarehouse.products.map(prod => {
+                            if (prod.id === elem.id) {
+                                prod = {
+                                    ...prod,
+                                    quantity: prod.quantity - elem.quantity
+                                }
+                            }
+                            return prod
+                        })
+                    })
+                    break;
+                case 'transfer':
+                    findWarehouse = props.warehouses.filter(el => el.id === elem.warehouseId).pop()
+                    const findIntoWarehouse = props.warehouses.filter(el => el.id === elem.into).pop()
+                    props.editWarehouse({
+                        ...findWarehouse,
+                        products: findWarehouse.products.map(prod => {
+                            if (prod.id === elem.id) {
+                                prod = {
+                                    ...prod,
+                                    quantity: prod.quantity - elem.quantity
+                                }
+                            }
+                            return prod
+                        })
+                    })
+                    props.editWarehouse({
+                        ...findIntoWarehouse,
+                        products: findIntoWarehouse.products.map(prod => {
+                            if (prod.id === elem.id) {
+                                prod = {
+                                    ...prod,
+                                    quantity: prod.quantity + elem.quantity
+                                }
+                            }
+                            return prod
+                        })
+                    })
+                    break
+            }
+        })
+
+        props.handleModal()
+    }
+
     return (
         <div className="modal open">
             {isMobile && (
@@ -114,7 +238,7 @@ const ModalEditProduct = (props) => {
                         </Button>
                     </Col>
                     <Col styles="s4">
-                        <Button onClick={() => props.handleModal()} styles="green">
+                        <Button onClick={() => handleSave()} styles="green">
                             <i className="large material-icons">check_circle</i>
                         </Button>
                     </Col>
@@ -153,9 +277,9 @@ const ModalEditProduct = (props) => {
                         <label className="active" htmlFor="first_name2">{props.content.name}</label>
                     </Col>
                     <Col styles="s10">
-                        <Row>
+                        <Row styles="right">
                             <Button onClick={() => props.handleModal()} styles="margin">Отмена</Button>
-                            <Button onClick={() => props.handleModal()} styles="margin green">Сохранить</Button>
+                            <Button onClick={() => handleSave()} styles="margin green">Сохранить</Button>
                             <Button onClick={() => handleDelete()} styles="margin red">Удалить</Button>
                         </Row>
                     </Col>
@@ -163,7 +287,7 @@ const ModalEditProduct = (props) => {
             )}
             <h5>Склады</h5>
             <div>
-                <Row styles="titles">
+                {!isMobile && <Row styles="titles">
                     <Col styles="s3">
                         <span>Название</span>
                     </Col>
@@ -179,53 +303,136 @@ const ModalEditProduct = (props) => {
                     <Col styles="s2">
                         <span>Действие</span>
                     </Col>
-                </Row>
+                </Row>}
                 <ul className="collection">
                     {props.warehouses.map((warehouse, index) => {
                         return warehouse.products.map(product => {
                             if (product.id === props.content.id) {
                                 return (
                                     <li className="collection-item">
-                                        <Row>
-                                            <Col styles="s3">
-                                                <span>{warehouse.name}</span>
-                                            </Col>
-                                            <Col styles="s3">
-                                                <span>{warehouse.address}</span>
-                                            </Col>
-                                            <Col styles="s2">
-                                                <input
-                                                    type="number"
-                                                    id={`quantityProduct${index}`}
-                                                    min={0}
-                                                    max={product.quantity}
-                                                    defaultValue={product.quantity}
-                                                    onChange={(e) => handleChangeProduct(warehouse.id, product, Number(e.target.value))}
-                                                />
-                                                <label>всего на складе: {product.quantity}</label>
-                                            </Col>
-                                            <Col styles="s2">
-                                                <select
-                                                    style={{display: 'block'}}
-                                                    onChange={(e) => handleChangeSelect(warehouse, e.target.value)}
-                                                >
-                                                    <option value={0} key={0}> </option>
-                                                    {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
-                                                        <option
-                                                            value={warehouse.id}
-                                                            key={index + 1}
+                                        {isMobile ? (
+                                            <>
+                                                <Row>
+                                                    <Col styles="s6">
+                                                        <span>{warehouse.name}</span>
+                                                    </Col>
+                                                    <Col styles="s6">
+                                                        <span>{warehouse.address}</span>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col styles="s7">
+                                                        <input
+                                                            type="number"
+                                                            id={`quantityProduct${index}`}
+                                                            min={0}
+                                                            max={product.quantity}
+                                                            defaultValue={0}
+                                                            onChange={(e) => handleChangeProduct(warehouse.id, product, Number(e.target.value))}
+                                                        />
+                                                        <label>всего на складе: {product.quantity}</label>
+                                                    </Col>
+                                                    <Col styles="s5">
+                                                        <select
+                                                            style={{display: 'block'}}
+                                                            onChange={(e) => handleChangeSelect(warehouse, Number(e.target.value))}
                                                         >
-                                                            {warehouse.name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </Col>
-                                            <Col styles="s2">
-                                                <Button onClick={() => handleTransfer(index)}>Перенести</Button>
-                                                <Button onClick={() => handleAdd(product)}>Добавить</Button>
-                                                <Button onClick={() => handleRemove(product)}>Убрать</Button>
-                                            </Col>
-                                        </Row>
+                                                            <option value={0} key={0}></option>
+                                                            {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
+                                                                <option
+                                                                    value={warehouse.id}
+                                                                    key={index + 1}
+                                                                >
+                                                                    {warehouse.name}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col styles="s4">
+                                                        <Button
+                                                            onClick={() => handleTransfer(index)}
+                                                            disabled={disabled.includes(index)}
+                                                        >
+                                                            Перенести
+                                                        </Button>
+                                                    </Col>
+                                                    <Col styles="s4">
+                                                        <Button
+                                                            onClick={() => handleAdd(index, product)}
+                                                            disabled={disabled.includes(index)}
+                                                        >
+                                                            Добавить
+                                                        </Button>
+                                                    </Col>
+                                                    <Col styles="s4">
+                                                        <Button
+                                                            onClick={() => handleRemove(index, product)}
+                                                            disabled={disabled.includes(index)}
+                                                        >
+                                                            Убрать
+                                                        </Button>
+                                                    </Col>
+                                                </Row>
+                                            </>
+                                        ) : (
+                                            <Row>
+                                                <Col styles="s3">
+                                                    <span>{warehouse.name}</span>
+                                                </Col>
+                                                <Col styles="s3">
+                                                    <span>{warehouse.address}</span>
+                                                </Col>
+                                                <Col styles="s2">
+                                                    <input
+                                                        type="number"
+                                                        id={`quantityProduct${index}`}
+                                                        min={0}
+                                                        max={product.quantity}
+                                                        defaultValue={0}
+                                                        onChange={(e) => handleChangeProduct(warehouse.id, product, Number(e.target.value))}
+                                                    />
+                                                    <label>всего на складе: {product.quantity}</label>
+                                                </Col>
+                                                <Col styles="s2">
+                                                    <select
+                                                        style={{display: 'block'}}
+                                                        onChange={(e) => handleChangeSelect(warehouse, Number(e.target.value))}
+                                                    >
+                                                        <option value={0} key={0}></option>
+                                                        {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
+                                                            <option
+                                                                value={warehouse.id}
+                                                                key={index + 1}
+                                                            >
+                                                                {warehouse.name}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </Col>
+                                                <Col styles="s2">
+                                                    <Button
+                                                        onClick={() => handleTransfer(index)}
+                                                        disabled={disabled.includes(index)}
+                                                    >
+                                                        Перенести
+                                                    </Button>
+                                                    <Button
+                                                        onClick={() => handleAdd(index, product)}
+                                                        disabled={disabled.includes(index)}
+                                                    >
+                                                        Добавить
+                                                    </Button>
+                                                    <Button
+                                                        onClick={() => handleRemove(index, product)}
+                                                        disabled={disabled.includes(index)}
+                                                    >
+                                                        Убрать
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                        )}
                                     </li>
                                 )
                             } else {
@@ -241,7 +448,8 @@ const ModalEditProduct = (props) => {
 
 function mapStateToProps(state) {
     return {
-        warehouses: state.warehousesReducer
+        warehouses: state.warehousesReducer,
+        products: state.productsReducer
     }
 }
 
@@ -252,6 +460,9 @@ function mapDispatchToProps(dispatch) {
         },
         editWarehouse: (value) => {
             dispatch({type: 'CHANGE_WAREHOUSE', value})
+        },
+        editProduct: (value) => {
+            dispatch({type: 'CHANGE_PRODUCT', value})
         }
     }
 }
