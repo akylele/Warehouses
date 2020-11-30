@@ -4,7 +4,6 @@ const Row = (props) => {
 
     const style = () => {
         if(props.styles){
-            console.log(props.styles.includes('right'))
             switch (props.styles) {
                 case props.styles.includes('right'):
                     return 'right'

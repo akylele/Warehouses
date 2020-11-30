@@ -12,7 +12,6 @@ import '../../../style/modal.scss'
 const ModalEditProduct = (props) => {
     const [fields, setFields] = useState({name: '', products: []})
     const [disabled, setDisabled] = useState([])
-    const generalWarehouse = props.warehouses.length > 0 && props.warehouses.filter(elem => elem.name === 'Общий склад').pop()
 
     useEffect(() => {
         setFields({
@@ -46,11 +45,9 @@ const ModalEditProduct = (props) => {
                 })
             }))
         }
-        // Toast(`"${warehouse.name}" --> "${intoWarehouse === generalWarehouse.id ? 'Общий' : intoWarehouse}", чтобы перенести нажмите "Перенести"`)
     }
 
     const handleChangeProduct = (warehouseId, product, value) => {
-        // if (fields.products.filter(prod => prod.warehouseId === warehouseId).length > 0) {
         setFields((prev) => ({
             ...prev,
             products: prev.products.map(prod => {
@@ -63,14 +60,8 @@ const ModalEditProduct = (props) => {
                 return prod
             })
         }))
-        // } else {
-        //     setFields((prev) => ({
-        //         ...prev,
-        //         products: prev.products.concat({...product, quantity: value, warehouseId})
-        //     }))
-        // }
+
     }
-    console.log(fields.products)
 
     const handleTransfer = (indexProduct) => {
         if (!fields.products[indexProduct].into) {
@@ -97,7 +88,7 @@ const ModalEditProduct = (props) => {
         }
     }
 
-    const handleAdd = (indexProduct, product) => {
+    const handleAdd = (indexProduct) => {
         if (fields.products[indexProduct].quantity > 0) {
 
             setFields(prev => ({
@@ -120,7 +111,7 @@ const ModalEditProduct = (props) => {
 
     }
 
-    const handleRemove = (indexProduct, product) => {
+    const handleRemove = (indexProduct) => {
         if (fields.products[indexProduct].quantity > 0) {
 
             setFields(prev => ({
@@ -161,7 +152,25 @@ const ModalEditProduct = (props) => {
     }
 
     const handleSave = () => {
-        fields.products.map(elem => {
+        props.editProduct({
+            ...props.content,
+            name: fields.name
+        })
+        props.warehouses.forEach(warehouse => {
+            props.editWarehouse({
+                ...warehouse,
+                products: warehouse.products.map(prod => {
+                    if (prod.id === props.content.id) {
+                        prod = {
+                            ...prod,
+                            name: fields.name
+                        }
+                    }
+                    return prod
+                })
+            })
+        })
+        fields.products.forEach(elem => {
             let findWarehouse
             switch (elem.type) {
                 case 'add':
@@ -221,6 +230,8 @@ const ModalEditProduct = (props) => {
                             return prod
                         })
                     })
+                    break
+                default:
                     break
             }
         })
@@ -306,10 +317,10 @@ const ModalEditProduct = (props) => {
                 </Row>}
                 <ul className="collection">
                     {props.warehouses.map((warehouse, index) => {
-                        return warehouse.products.map(product => {
+                        return warehouse.products.map((product,indexForKey) => {
                             if (product.id === props.content.id) {
                                 return (
-                                    <li className="collection-item">
+                                    <li className="collection-item" key={indexForKey}>
                                         {isMobile ? (
                                             <>
                                                 <Row>
@@ -337,7 +348,7 @@ const ModalEditProduct = (props) => {
                                                             style={{display: 'block'}}
                                                             onChange={(e) => handleChangeSelect(warehouse, Number(e.target.value))}
                                                         >
-                                                            <option value={0} key={0}></option>
+                                                            <option value={0} key={0}> </option>
                                                             {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
                                                                 <option
                                                                     value={warehouse.id}

@@ -16,8 +16,8 @@ import CreateProduct from "./createProduct";
 
 const ProductsList = (props) => {
     const [modalContent, setModalContent] = useState(null)
-    const [screenXStart, setScreenXStart] = useState()
-    const [screenXEnd, setScreenXEnd] = useState()
+    const [screenXStart, setScreenXStart] = useState(0)
+    const [screenXEnd, setScreenXEnd] = useState(0)
     const [style, setStyle] = useState(100)
 
 
@@ -200,8 +200,4 @@ function mapStateToProps(state) {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProductsList)
+export default connect(mapStateToProps, null)(ProductsList)

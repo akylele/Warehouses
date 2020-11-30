@@ -12,7 +12,7 @@ import Toast from "../../../helpers/toast";
 
 const CreateProduct = (props) => {
     const [name, setName] = useState('')
-    const [warehouse, setWarehouse] = useState()
+    const [warehouse, setWarehouse] = useState('')
     const [quantity, setQuantity] = useState(1)
 
     const createProduct = () => {
@@ -69,7 +69,7 @@ const CreateProduct = (props) => {
                         style={{display: 'block'}}
                         onChange={(e) => setWarehouse(e.target.value)}
                     >
-                        <option value="" key={0} selected/>
+                        <option key={0} selected/>
                         {props.warehouses.length > 0 && props.warehouses.filter(warehouse => warehouse.name !== 'Общий склад').map((warehouse, index) => (
                             <option
                                 value={warehouse.id}
@@ -85,7 +85,7 @@ const CreateProduct = (props) => {
                 <Col styles="input-field s12">
                     <input
                         type="number"
-                        onChange={(e) => setQuantity(e.target.value)}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
                         min={1}
                     />
                     <label>Количество</label>

@@ -1,22 +1,8 @@
-export const initialState = [
-    {
-        name: 'Утюг',
-        id: 1
-    }, {
-        name: 'Iphone SE',
-        id: 2
-    }, {
-        name: 'Iphone 10',
-        id: 3
-    }, {
-        name: 'Двери',
-        id: 4
-    },
-]
+export const initialState = localStorage.getItem('products') ? JSON.parse(localStorage.getItem('products')) : []
 
 export default function Products(state = initialState, action) {
     switch (action.type) {
-        case 'SET_STATE':
+        case 'SET_STATE_PRODUCTS':
             return action.value
         case 'CHANGE_PRODUCT':
             return state.map(product => {
