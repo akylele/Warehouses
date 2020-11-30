@@ -81,10 +81,15 @@ function App(props) {
             name: 'Двери',
             id: 4
         }]
-        localStorage.setItem('warehouses', JSON.stringify(initialStateWarehouses))
-        localStorage.setItem('products', JSON.stringify(initialStateProducts))
-        props.setStateWarehouses(initialStateWarehouses)
-        props.setStateProducts(initialStateProducts)
+        if(!localStorage.getItem('warehouses') || JSON.parse(localStorage.getItem('warehouses')).length < 1){
+            localStorage.setItem('warehouses', JSON.stringify(initialStateWarehouses))
+            props.setStateWarehouses(initialStateWarehouses)
+        }
+        if(!localStorage.getItem('products') || JSON.parse(localStorage.getItem('products')).length < 1){
+            localStorage.setItem('products', JSON.stringify(initialStateProducts))
+            props.setStateProducts(initialStateProducts)
+        }
+
     }, [])
 
     return (

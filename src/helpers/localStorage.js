@@ -4,11 +4,15 @@ import {connect} from "react-redux";
 const SetLocalStorage = (props) => {
 
     useEffect(() => {
-        localStorage.setItem('warehouses', JSON.stringify(props.warehouses))
+        if(!localStorage.getItem('warehouse')){
+            localStorage.setItem('warehouses', JSON.stringify(props.warehouses))
+        }
     }, [props.warehouses])
 
     useEffect(() => {
-        localStorage.setItem('products', JSON.stringify(props.products))
+        if(!localStorage.getItem('products')) {
+            localStorage.setItem('products', JSON.stringify(props.products))
+        }
     }, [props.products])
 
     return null

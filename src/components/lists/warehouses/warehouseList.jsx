@@ -20,7 +20,6 @@ const WarehouseList = (props) => {
     const [screenXEnd, setScreenXEnd] = useState(0)
     const [style, setStyle] = useState(100)
 
-
     useEffect(() => {
         if (screenXStart && screenXEnd) {
             if (screenXStart > screenXEnd) {
