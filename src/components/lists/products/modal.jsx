@@ -47,20 +47,24 @@ const ModalEditProduct = (props) => {
         }
     }
 
-    const handleChangeProduct = (warehouseId, product, value) => {
-        setFields((prev) => ({
-            ...prev,
-            products: prev.products.map(prod => {
-                if (prod.warehouseId === warehouseId) {
-                    prod = {
-                        ...prod,
-                        quantity: value
+    const handleChangeProduct = (warehouseId, product, value, index) => {
+            setFields((prev) => ({
+                ...prev,
+                products: prev.products.map(prod => {
+                    if (prod.warehouseId === warehouseId) {
+                        prod = {
+                            ...prod,
+                            quantity: value
+                        }
                     }
-                }
-                return prod
-            })
-        }))
-
+                    return prod
+                })
+            }))
+        if(!(product.quantity - value < 0)){
+            setDisabled(disabled.filter(elem => (elem.index !== index && elem.type === 'transfer') || (elem.index !== index && elem.type === 'remove')))
+        } else {
+            setDisabled(disabled.concat([{index,type:'transfer'},{index,type:'remove'}]))
+        }
     }
 
     const handleTransfer = (indexProduct) => {
@@ -68,7 +72,6 @@ const ModalEditProduct = (props) => {
             return Toast('Выберите склад отличающийся от нынешнего')
         }
         if (fields.products[indexProduct].quantity > 0) {
-
             setFields(prev => ({
                 ...prev,
                 products: prev.products.map((prod, index) => {
@@ -82,7 +85,7 @@ const ModalEditProduct = (props) => {
                 })
             }))
 
-            setDisabled(disabled.concat(indexProduct))
+            setDisabled(disabled.concat({index:indexProduct, type: 'transfer'}))
         } else {
             Toast('Вы не выбрали количество')
         }
@@ -90,7 +93,6 @@ const ModalEditProduct = (props) => {
 
     const handleAdd = (indexProduct) => {
         if (fields.products[indexProduct].quantity > 0) {
-
             setFields(prev => ({
                 ...prev,
                 products: prev.products.map((prod, index) => {
@@ -104,7 +106,7 @@ const ModalEditProduct = (props) => {
                 })
             }))
 
-            setDisabled(disabled.concat(indexProduct))
+            setDisabled(disabled.concat({index:indexProduct, type: 'add'}))
         } else {
             Toast('Вы не выбрали количество')
         }
@@ -113,7 +115,6 @@ const ModalEditProduct = (props) => {
 
     const handleRemove = (indexProduct) => {
         if (fields.products[indexProduct].quantity > 0) {
-
             setFields(prev => ({
                 ...prev,
                 products: prev.products.map((prod, index) => {
@@ -127,7 +128,7 @@ const ModalEditProduct = (props) => {
                 })
             }))
 
-            setDisabled(disabled.concat(indexProduct))
+            setDisabled(disabled.concat({index:indexProduct, type: 'remove'}))
         } else {
             Toast('Вы не выбрали количество')
         }
@@ -152,11 +153,13 @@ const ModalEditProduct = (props) => {
     }
 
     const handleSave = () => {
-        props.editProduct({
-            ...props.content,
-            name: fields.name
-        })
-        props.warehouses.forEach(warehouse => {
+        if (props.content.name !== fields.name) {
+            props.editProduct({
+                ...props.content,
+                name: fields.name
+            })
+        }
+        props.warehouses.map(warehouse => {
             props.editWarehouse({
                 ...warehouse,
                 products: warehouse.products.map(prod => {
@@ -170,7 +173,7 @@ const ModalEditProduct = (props) => {
                 })
             })
         })
-        fields.products.forEach(elem => {
+        fields.products.map(elem => {
             let findWarehouse
             switch (elem.type) {
                 case 'add':
@@ -206,6 +209,24 @@ const ModalEditProduct = (props) => {
                 case 'transfer':
                     findWarehouse = props.warehouses.filter(el => el.id === elem.warehouseId).pop()
                     const findIntoWarehouse = props.warehouses.filter(el => el.id === elem.into).pop()
+
+                    let newArrForIntoWarehouse = findIntoWarehouse.products.map(prod => {
+                        if (prod.id === elem.id) {
+                            prod = {
+                                ...prod,
+                                quantity: prod.quantity + elem.quantity
+                            }
+                        }
+
+                        return prod
+                    })
+                    console.log('elem',elem)
+                    console.log('newArrForIntoWarehouse',newArrForIntoWarehouse)
+
+                    if(findIntoWarehouse.products.filter(prod => prod.id === elem.id).length === 0){
+                        newArrForIntoWarehouse = newArrForIntoWarehouse.concat({id: elem.id, name: elem.name, quantity: elem.quantity})
+                    }
+
                     props.editWarehouse({
                         ...findWarehouse,
                         products: findWarehouse.products.map(prod => {
@@ -220,15 +241,7 @@ const ModalEditProduct = (props) => {
                     })
                     props.editWarehouse({
                         ...findIntoWarehouse,
-                        products: findIntoWarehouse.products.map(prod => {
-                            if (prod.id === elem.id) {
-                                prod = {
-                                    ...prod,
-                                    quantity: prod.quantity + elem.quantity
-                                }
-                            }
-                            return prod
-                        })
+                        products: newArrForIntoWarehouse
                     })
                     break
                 default:
@@ -317,7 +330,7 @@ const ModalEditProduct = (props) => {
                 </Row>}
                 <ul className="collection">
                     {props.warehouses.map((warehouse, index) => {
-                        return warehouse.products.map((product,indexForKey) => {
+                        return warehouse.products.map((product, indexForKey) => {
                             if (product.id === props.content.id) {
                                 return (
                                     <li className="collection-item" key={indexForKey}>
@@ -339,7 +352,7 @@ const ModalEditProduct = (props) => {
                                                             min={0}
                                                             max={product.quantity}
                                                             defaultValue={0}
-                                                            onChange={(e) => handleChangeProduct(warehouse.id, product, Number(e.target.value))}
+                                                            onChange={(e) => handleChangeProduct(warehouse.id, product, Number(e.target.value), index)}
                                                         />
                                                         <label>всего на складе: {product.quantity}</label>
                                                     </Col>
@@ -348,7 +361,7 @@ const ModalEditProduct = (props) => {
                                                             style={{display: 'block'}}
                                                             onChange={(e) => handleChangeSelect(warehouse, Number(e.target.value))}
                                                         >
-                                                            <option value={0} key={0}> </option>
+                                                            <option value={0} key={0}></option>
                                                             {props.warehouses.length > 0 && props.warehouses.map((warehouse, index) => (
                                                                 <option
                                                                     value={warehouse.id}
@@ -364,7 +377,7 @@ const ModalEditProduct = (props) => {
                                                     <Col styles="s4">
                                                         <Button
                                                             onClick={() => handleTransfer(index)}
-                                                            disabled={disabled.includes(index)}
+                                                            disabled={disabled.filter(elem => elem.index === index && elem.type === 'transfer').length > 0}
                                                         >
                                                             Перенести
                                                         </Button>
@@ -372,7 +385,7 @@ const ModalEditProduct = (props) => {
                                                     <Col styles="s4">
                                                         <Button
                                                             onClick={() => handleAdd(index, product)}
-                                                            disabled={disabled.includes(index)}
+                                                            disabled={disabled.filter(elem => elem.index === index && elem.type === 'add').length > 0}
                                                         >
                                                             Добавить
                                                         </Button>
@@ -380,7 +393,7 @@ const ModalEditProduct = (props) => {
                                                     <Col styles="s4">
                                                         <Button
                                                             onClick={() => handleRemove(index, product)}
-                                                            disabled={disabled.includes(index)}
+                                                            disabled={disabled.filter(elem => elem.index === index && elem.type === 'remove').length > 0}
                                                         >
                                                             Убрать
                                                         </Button>
@@ -402,7 +415,7 @@ const ModalEditProduct = (props) => {
                                                         min={0}
                                                         max={product.quantity}
                                                         defaultValue={0}
-                                                        onChange={(e) => handleChangeProduct(warehouse.id, product, Number(e.target.value))}
+                                                        onChange={(e) => handleChangeProduct(warehouse.id, product, Number(e.target.value), index)}
                                                     />
                                                     <label>всего на складе: {product.quantity}</label>
                                                 </Col>
@@ -425,19 +438,19 @@ const ModalEditProduct = (props) => {
                                                 <Col styles="s2">
                                                     <Button
                                                         onClick={() => handleTransfer(index)}
-                                                        disabled={disabled.includes(index)}
+                                                        disabled={disabled.filter(elem => elem.index === index && elem.type === 'transfer').length > 0}
                                                     >
                                                         Перенести
                                                     </Button>
                                                     <Button
                                                         onClick={() => handleAdd(index, product)}
-                                                        disabled={disabled.includes(index)}
+                                                        disabled={disabled.filter(elem => elem.index === index && elem.type === 'add').length > 0}
                                                     >
                                                         Добавить
                                                     </Button>
                                                     <Button
                                                         onClick={() => handleRemove(index, product)}
-                                                        disabled={disabled.includes(index)}
+                                                        disabled={disabled.filter(elem => elem.index === index && elem.type === 'remove').length > 0}
                                                     >
                                                         Убрать
                                                     </Button>

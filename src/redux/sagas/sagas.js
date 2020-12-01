@@ -1,14 +1,12 @@
-import { call, put, takeEvery, takeLatest, delay } from 'redux-saga/effects'
+import { all } from 'redux-saga/effects'
+import productsWatcher from './products/productsSaga'
+import warehousesWatcher from './warehouses/warehousesSaga'
 
-function* addWarehouse(action) {
-    yield delay(1000)
-    try {
-        yield put({ type: 'ADD_WAREHOUSE', value: action.value });
-    } catch (e) {
-    }
-}
-function* mySaga() {
-    yield takeEvery("ADD_WAREHOUSE", addWarehouse);
-}
 
-export default mySaga;
+export default function* rootSaga() {
+    console.log('root')
+    yield all([
+        productsWatcher(),
+        warehousesWatcher()
+    ])
+}
